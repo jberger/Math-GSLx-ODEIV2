@@ -1,0 +1,6 @@
+Revision history for Perl extension Math::GSLx::ODEIV2.
+
+0.01  Sun Jul 10 11:39:12 2011
+	- original version; created by h2xs 1.23 with options
+		-b 5.8.0 -APn Math::GSLx::ODEIV2
+
