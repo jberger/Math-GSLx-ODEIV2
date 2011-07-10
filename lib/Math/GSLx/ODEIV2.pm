@@ -64,6 +64,8 @@ Math::GSLx::ODEIV2 - Solve ODEs using Perl and GSL v1.15+
  
    my ($t, @y) = @_;
    
+   #example:   y''(t)==-y(t)
+   #i.e.:        ( y'=v, v'=-y ) 
    my @derivs = (
      $y[1],
      -$y[0],
@@ -89,7 +91,11 @@ This module is in an alpha state. It needs more tests and the ability to configu
 
 =head2 ode_solver
 
-This is the main function of the module. It is called as C<ode_solver( $diffeq_code_ref, $t_range [, $opts_ref ])>.
+This is the main function of the module. 
+
+ $solution = C<ode_solver( $diffeq_code_ref, $t_range [, $opts_ref ])>.
+
+=head3 arguments
 
 The first argument, C<$diffeq_code_ref>, is a code reference to a subroutine (or anonymous sub) which specifies the differential equations. This subroutine must have a specific construction:
 
@@ -125,7 +131,19 @@ A scalar number specifying finish time. In this case the start time will be zero
 
 The third argument is a hash reference containing other options. This is not yet used, but the author envisions this to set the error limits and the method used by the solver.
 
-See the example given in the L</SYNOPSIS> for a sine function.
+=head3 return
+
+The return is an array reference of array references. Each element of the outer array reference will contain the time and function value of each function in order as above. This format allows easy loading into L<PDL> if so desired:
+
+ $pdl = pdl($solution);
+
+of course one may recover one column by simple use of a C<map>:
+
+ @solution_t_vals  = map { $_->[0] } @$solution;
+ @solution_y1_vals = map { $_->[1] } @$solution;
+ ...
+
+For a usage example see the L</SYNOPSIS> for a sine function given by C<y''(t)=-y(t)>.
 
 =head1 NON-EXPORTED FUNCTIONS
 
@@ -140,6 +158,10 @@ A simple function taking no arguments and returning the version number of the GS
 =item L<Math::ODE>
 
 =item L<Math::GSL::ODEIV>
+
+=item L<GSL|http://www.gnu.org/software/gsl/>
+
+=item L<PDL>, L<website|http://pdl.perl.org> 
 
 =back
 
