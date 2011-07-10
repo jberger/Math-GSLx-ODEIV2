@@ -93,7 +93,7 @@ This module is in an alpha state. It needs more tests and the ability to configu
 
 This is the main function of the module. 
 
- $solution = C<ode_solver( $diffeq_code_ref, $t_range [, $opts_ref ])>.
+ $solution = ode_solver( $diffeq_code_ref, $t_range [, $opts_ref ])
 
 =head3 arguments
 
