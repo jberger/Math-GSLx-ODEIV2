@@ -4,5 +4,5 @@ MANIFEST
 ODEIV2.xs
 ppport.h
 README
-t/Math-GSLx-ODEIV2.t
+t/sine.t
 lib/Math/GSLx/ODEIV2.pm

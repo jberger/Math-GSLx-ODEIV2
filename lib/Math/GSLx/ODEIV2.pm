@@ -75,7 +75,7 @@ Math::GSLx::ODEIV2 - Solve ODEs using Perl and GSL v1.15+
 
 =head1 DESCRIPTION
 
-This module provides a Perl-ish interface to the Gnu Scientific Library's (GSL) ODEIV2 library. This library is the new ordinary differential equation solver as of GSL version 1.15. 
+This module provides a Perl-ish interface to the Gnu Scientific Library's (L<GSL|http://www.gnu.org/software/gsl/>) ODEIV2 library, (L<documentation|http://www.gnu.org/software/gsl/manual/html_node/Ordinary-Differential-Equations.html>). This library is the new ordinary differential equation solver as of GSL version 1.15. 
 
 =head2 NAMESPACE
 
