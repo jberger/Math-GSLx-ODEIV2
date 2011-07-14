@@ -40,7 +40,11 @@ sub ode_solver {
     croak "Could not understand 't range'"; 
   }
 
-  my $stepper = $step_types{ $opts->{type} || 'rk8pd' };
+  my $stepper = $step_types{ $opts->{type} } || 0;
+  unless ( $stepper ) {
+    carp "Using default step type 'rk8pd'\n";
+    $stepper = $step_types{rk8pd} unless ($stepper >= 1);
+  }
 
   my $result;
 
