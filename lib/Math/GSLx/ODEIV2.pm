@@ -11,7 +11,7 @@ use parent 'Exporter';
 our @EXPORT = ( qw/ ode_solver / );
 our @EXPORT_OK = ( qw/ get_gsl_version get_step_types / );
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 $VERSION = eval $VERSION;
 
 require XSLoader;
