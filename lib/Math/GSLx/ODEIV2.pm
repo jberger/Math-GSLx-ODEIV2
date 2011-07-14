@@ -9,13 +9,21 @@ use Scalar::Util qw/looks_like_number/;
 
 use parent 'Exporter';
 our @EXPORT = ( qw/ ode_solver / );
-our @EXPORT_OK = ( qw/ get_gsl_version / );
+our @EXPORT_OK = ( qw/ get_gsl_version get_step_types / );
 
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
 
 require XSLoader;
 XSLoader::load('Math::GSLx::ODEIV2', $VERSION);
+
+my %step_types = (
+  rk2   => 1,
+  rk4   => 2,
+  rkf45 => 3,
+  rkck  => 4,
+  rk8pd => 5,
+);
 
 sub ode_solver {
 
@@ -32,14 +40,20 @@ sub ode_solver {
     croak "Could not understand 't range'"; 
   }
 
+  my $stepper = $step_types{ $opts->{type} || 'rk8pd' };
+
   my $result;
 
   {
     local @_; #be sure the stack is clear before calling c_ode_solver!
-    $result = c_ode_solver($eqn, @t_range);
+    $result = c_ode_solver($eqn, @t_range, $stepper);
   }
 
   return $result;
+}
+
+sub get_step_types {
+  return keys %step_types;
 }
 
 1;
