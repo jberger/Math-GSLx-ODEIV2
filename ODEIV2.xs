@@ -81,7 +81,8 @@ SV* c_ode_solver (SV* eqn, double t1, double t2, int steps, int stepper) {
   } else if (stepper == 5) {
     step_type = gsl_odeiv2_step_rk8pd;
   } else {
-    warn("Could not determine correct stepper function");
+    warn("Could not determine step type, using rk8pd");
+    step_type = gsl_odeiv2_step_rk8pd;
   }
 
   ENTER;

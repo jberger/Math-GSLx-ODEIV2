@@ -113,7 +113,7 @@ This is the main function of the module.
 
  $solution = ode_solver( $diffeq_code_ref, $t_range [, $opts_ref ])
 
-=head3 arguments
+=head3 required arguments
 
 The first argument, C<$diffeq_code_ref>, is a code reference to a subroutine (or anonymous sub) which specifies the differential equations. This subroutine must have a specific construction:
 
@@ -147,7 +147,15 @@ A scalar number specifying finish time. In this case the start time will be zero
 
 =back
 
-The third argument is a hash reference containing other options. This is not yet used, but the author envisions this to set the error limits and the method used by the solver.
+The third argument is a hash reference containing other options. They are as follows:
+
+=over
+
+=item *
+
+C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>.
+
+=back
 
 =head3 return
 
@@ -163,7 +171,11 @@ of course one may recover one column by simple use of a C<map>:
 
 For a usage example see the L</SYNOPSIS> for a sine function given by C<y''(t)=-y(t)>.
 
-=head1 NON-EXPORTED FUNCTIONS
+=head1 EXPORTABLE FUNCTIONS
+
+=head2 get_step_types
+
+Returns the available step types which may be specified in the L</ode_solver> function's options hashref.
 
 =head2 get_gsl_version
 
