@@ -11,6 +11,9 @@ use parent 'Exporter';
 our @EXPORT = ( qw/ ode_solver / );
 our @EXPORT_OK = ( qw/ get_gsl_version get_step_types / );
 
+our %EXPORT_TAGS;
+push @{$EXPORT_TAGS{all}}, @EXPORT, @EXPORT_OK;
+
 our $VERSION = '0.02';
 $VERSION = eval $VERSION;
 
@@ -40,10 +43,14 @@ sub ode_solver {
     croak "Could not understand 't range'"; 
   }
 
-  my $stepper = $step_types{ $opts->{type} } || 0;
-  unless ( $stepper ) {
+  my $stepper = 0;
+  if ( exists $opts->{type} and exists $step_types{ $opts->{type} } ) {
+    $stepper = $step_types{ $opts->{type} };
+  } 
+
+  unless ($stepper) {
     carp "Using default step type 'rk8pd'\n";
-    $stepper = $step_types{rk8pd} unless ($stepper >= 1);
+    $stepper = $step_types{rk8pd};
   }
 
   my $result;
@@ -57,7 +64,7 @@ sub ode_solver {
 }
 
 sub get_step_types {
-  return keys %step_types;
+  return sort { $step_types{$a} <=> $step_types{$b} } keys %step_types;
 }
 
 1;
@@ -147,13 +154,15 @@ A scalar number specifying finish time. In this case the start time will be zero
 
 =back
 
+=head3 optional argument (the options hash reference)
+
 The third argument is a hash reference containing other options. They are as follows:
 
 =over
 
 =item *
 
-C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>.
+C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>. They are those steps defined by the C<gsl_odeiv2> library which do not need special extras, most commonly this means those that do not require the Jacobian of the system.
 
 =back
 

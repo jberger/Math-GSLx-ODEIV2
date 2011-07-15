@@ -10,8 +10,10 @@ sub exit_early {
   exit 0;
 }
 
-chomp(my $gsl_version = qx! gsl-config_a --version !);
+my $gsl_version = qx/ gsl-config --version /;
 exit_early("\n [gsl-config --version: $!]") if ($?);
+
+chomp($gsl_version);
 
 if ($gsl_version < $min_gsl_version) {
   exit_early(", but you only have $gsl_version");
