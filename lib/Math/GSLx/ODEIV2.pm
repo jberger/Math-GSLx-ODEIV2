@@ -66,6 +66,20 @@ sub ode_solver {
   my $epsabs = (exists $opts->{epsabs}) ? $opts->{espabs} : 1e-6;
   my $epsrel = (exists $opts->{epsrel}) ? $opts->{esprel} : 0.0;
 
+  # Error types (set error scaling with logical name)
+  my ($a_y, $a_dydt) = (1, 0);
+  if ($opts->{scaling} eq 'y') {
+    # This is currently the default, do nothing
+  } elsif ($opts->{scaling} eq 'yp') {
+    ($a_y, $a_dydt) = (1, 0);
+  } elsif (exists $opts->{scaling}) {
+    carp "Could not understand error_type specification. Using defaults.";
+  }
+
+  # Individual error scalings (overrides logical name if set above)
+  $a_y = $opts->{'a_y'} if (exists $opts->{'a_y'});
+  $a_dydt = $opts->{'a_dydt'} if (exists $opts->{'a_dydt'});
+
   ## Run Solver ##
 
   # Run the solver at the C/XS level
@@ -73,7 +87,7 @@ sub ode_solver {
   {
     local @_; #be sure the stack is clear before calling c_ode_solver!
     $result = c_ode_solver(
-      $eqn, @t_range, $step_type, $h_step, $epsabs, $epsrel
+      $eqn, @t_range, $step_type, $h_step, $epsabs, $epsrel, $a_y, $a_dydt
     );
   }
 
@@ -185,9 +199,23 @@ C<type> specifies the step type to be used. The default is C<rk8pd>. The availab
 
 C<h_step> the initial "h" step used by the solver. Defaults to C<1e-6>.
 
+=item * Error scaling options. These all refer to the adaptive step size contoller which is well documented in the L<GSL manual|http://www.gnu.org/software/gsl/manual/html_node/Adaptive-Step_002dsize-Control.html>. 
+
+=over
+
 =item *
 
-C<epsabs> and C<epsrel> the allowable error levels (absolute and relative respectively) used in the system. Defaults are C<1e-6> and C<0.0> respectively. N.B. For the time being these error levels are in the value of the function not in the value of the derivative. The ability to select this is planned for an upcoming release.
+C<epsabs> and C<epsrel> the allowable error levels (absolute and relative respectively) used in the system. Defaults are C<1e-6> and C<0.0> respectively.
+
+=item *
+
+C<a_y> and C<a_dydt> set the scaling factors for the function value and the function derivative respectively. While these may be used directly, these can be set using the shorthand ...
+
+=item *
+
+C<scaling>, a shorthand for setting the above option. The available values may be C<y> meaning C<{a_y = 1, a_dydt = 0}> (which is the default), or C<yp> meaning C<{a_y = 0, a_dydt = 1}>. Note that setting the above scaling factors will override the corresponding field in this shorthand.
+
+=back
 
 =back
 

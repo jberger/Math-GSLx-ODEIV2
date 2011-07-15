@@ -59,8 +59,8 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
 /* c_ode_solver needs stack to be clear when called,
    I recommend `local @_;` before calling. */
 SV* c_ode_solver
-  (SV* eqn, double t1, double t2, int steps, 
-   int step_type_num, double h_step, double epsabs, double epsrel) {
+  (SV* eqn, double t1, double t2, int steps, int step_type_num, double h_step,
+    double epsabs, double epsrel, double a_y, double a_dydt) {
 
   dSP;
 
@@ -113,8 +113,9 @@ SV* c_ode_solver
   gsl_odeiv2_system sys = {diff_eqs, NULL, num, &myparams};
      
   gsl_odeiv2_driver * d = 
-    gsl_odeiv2_driver_alloc_y_new (&sys, step_type,
-   				    h_step, epsabs, epsrel);
+    gsl_odeiv2_driver_alloc_standard_new (
+      &sys, step_type, h_step, epsabs, epsrel, a_y, a_dydt
+    );
      
   for (i = 1; i <= steps; i++)
     {
@@ -155,7 +156,7 @@ char *
 get_gsl_version ()
 
 SV *
-c_ode_solver (eqn, t1, t2, steps, step_type_num, h_step, epsabs, epsrel)
+c_ode_solver (eqn, t1, t2, steps, step_type_num, h_step, epsabs, epsrel, a_y, a_dydt)
 	SV *	eqn
 	double	t1
 	double	t2
@@ -164,3 +165,5 @@ c_ode_solver (eqn, t1, t2, steps, step_type_num, h_step, epsabs, epsrel)
 	double	h_step
 	double	epsabs
 	double	epsrel
+	double	a_y
+	double	a_dydt
