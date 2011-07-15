@@ -68,12 +68,14 @@ sub ode_solver {
 
   # Error types (set error scaling with logical name)
   my ($a_y, $a_dydt) = (1, 0);
-  if ($opts->{scaling} eq 'y') {
-    # This is currently the default, do nothing
-  } elsif ($opts->{scaling} eq 'yp') {
-    ($a_y, $a_dydt) = (1, 0);
-  } elsif (exists $opts->{scaling}) {
-    carp "Could not understand error_type specification. Using defaults.";
+  if (exists $opts->{scaling}) {
+    if ($opts->{scaling} eq 'y') {
+      # This is currently the default, do nothing
+    } elsif ($opts->{scaling} eq 'yp') {
+      ($a_y, $a_dydt) = (1, 0);
+    } else {
+      carp "Could not understand error_type specification. Using defaults.";
+    }
   }
 
   # Individual error scalings (overrides logical name if set above)
