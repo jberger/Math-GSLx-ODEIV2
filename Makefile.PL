@@ -27,13 +27,13 @@ WriteMakefile(
     PREREQ_PM         => {}, # e.g., Module::Name => 1.1
     ABSTRACT_FROM     => 'lib/Math/GSLx/ODEIV2.pm', # retrieve abstract from module
     AUTHOR            => 'Joel Berger <joel.a.berger@gmail.com>',
-    LICENSE           => 'perl'
+    LICENSE           => 'perl',
     META_MERGE        => {
       resources => {
         repository => {
           type => "git",
           url  => "git://github.com:jberger/Math-GSLx-ODEIV2.git",
-          web  => "http://github.com/jberger/Math-GSLx-ODEIV2"
+          web  => "http://github.com/jberger/Math-GSLx-ODEIV2",
         },
       },
     },
