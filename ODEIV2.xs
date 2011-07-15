@@ -127,6 +127,10 @@ SV* c_ode_solver
           break;
         }
 
+      /* At this point I envision that PDL could be used to store the data
+         rather than creating tons of SVs. Of course the current behavior
+         should remain for those systems without PDL */
+
       AV* data = newAV();
       av_push(data, newSVnv(t));
       for (j = 0; j < num; j++) {

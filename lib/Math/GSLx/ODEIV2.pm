@@ -181,6 +181,14 @@ The third argument is a hash reference containing other options. They are as fol
 
 C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>. They are those steps defined by the C<gsl_odeiv2> library which do not need special extras, most commonly this means those that do not require the Jacobian of the system.
 
+=item *
+
+C<h_step> the initial "h" step used by the solver. Defaults to C<1e-6>.
+
+=item *
+
+C<epsabs> and C<epsrel> the allowable error levels (absolute and relative respectively) used in the system. Defaults are C<1e-6> and C<0.0> respectively. N.B. For the time being these error levels are in the value of the function not in the value of the derivative. The ability to select this is planned for an upcoming release.
+
 =back
 
 =head3 return
@@ -206,6 +214,10 @@ Returns the available step types which may be specified in the L</ode_solver> fu
 =head2 get_gsl_version
 
 A simple function taking no arguments and returning the version number of the GSL library as specified in C<gsl/gsl_version.h>. This was originally used for dependency checking but now remains simply for the interested user.
+
+=head1 FUTURE GOALS
+
+On systems with PDL installed, I would like to include some mechanism which will store the numerical data in a piddle directly, saving the overhead of creating an SV for each of the pieces of data generated. I envision this happening as transparently as possible when PDL is available. This will probably take some experimentation to get it right.
 
 =head1 SEE ALSO
 
