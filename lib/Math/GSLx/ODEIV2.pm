@@ -135,7 +135,7 @@ This module is in an alpha state. It needs more tests and the ability to configu
 
 This is the main function of the module. 
 
- $solution = ode_solver( $diffeq_code_ref, $t_range [, $opts_ref ])
+ $solution = ode_solver( $diffeq_code_ref, $t_range [, $opts_hashref ])
 
 =head3 required arguments
 
@@ -173,7 +173,7 @@ A scalar number specifying finish time. In this case the start time will be zero
 
 =head3 optional argument (the options hash reference)
 
-The third argument is a hash reference containing other options. They are as follows:
+The third argument, C<$opts_hashref>, is a hash reference containing other options. They are as follows:
 
 =over
 

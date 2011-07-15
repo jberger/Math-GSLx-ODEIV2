@@ -1,5 +1,8 @@
 Revision history for Perl extension Math::GSLx::ODEIV2.
 
+0.02  Fri Jul 15 
+	- added error level, h_step and step type options to ode_solver
+
 0.01  Sun Jul 10 11:39:12 2011
 	- original version; created by h2xs 1.23 with options
 		-b 5.8.0 -APn Math::GSLx::ODEIV2
