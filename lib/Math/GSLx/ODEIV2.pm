@@ -143,7 +143,7 @@ Why the C<Math::GSLx::> namespace? Well since Jonathan Leto has been kind enough
 
 =head2 INTERFACE STABILITY
 
-This module is in an alpha state. It needs more tests and the ability to configure more of the options that the GSL library allows. While the author has put some thought into the interface it may change in the future as the above mentioned functionality is added or as bugs appear.
+This module is in an alpha state. It needs more tests and the ability to configure more of the options that the GSL library allows. Currently this module leans on the fact that GSL has an extensive test suite. While the author has put some thought into the interface it may change in the future as the above mentioned functionality is added or as bugs appear. Bug reports are encouraged!
 
 =head1 EXPORTED FUNCTIONS
 
