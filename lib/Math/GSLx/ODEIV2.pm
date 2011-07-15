@@ -139,7 +139,7 @@ This module provides a Perl-ish interface to the Gnu Scientific Library's (L<GSL
 
 =head2 NAMESPACE
 
-Why the C<Math::GSLx::> namespace? Well since Jonathan Leto has been kind enough to SWIG the entire GSL library into the C<Math::GSL::> namespace I didn't want to confuse things by impling that this module was in any way associated with that work. The C<x> namespaces have become popular so I ran with it.
+Why the C<Math::GSLx::> namespace? Well since Jonathan Leto has been kind enough to SWIG the entire GSL library into the C<Math::GSL::> namespace I didn't want to confuse things by impling that this module was a part of that effort. The C<x> namespaces have become popular so I ran with it.
 
 =head2 INTERFACE STABILITY
 
