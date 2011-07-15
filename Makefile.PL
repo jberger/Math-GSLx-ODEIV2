@@ -25,9 +25,18 @@ WriteMakefile(
     NAME              => 'Math::GSLx::ODEIV2',
     VERSION_FROM      => 'lib/Math/GSLx/ODEIV2.pm', # finds $VERSION
     PREREQ_PM         => {}, # e.g., Module::Name => 1.1
-    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'lib/Math/GSLx/ODEIV2.pm', # retrieve abstract from module
-       AUTHOR         => 'Joel Berger <joel.a.berger@gmail.com>') : ()),
+    ABSTRACT_FROM     => 'lib/Math/GSLx/ODEIV2.pm', # retrieve abstract from module
+    AUTHOR            => 'Joel Berger <joel.a.berger@gmail.com>',
+    LICENSE           => 'perl'
+    META_MERGE        => {
+      resources => {
+        repository => {
+          type => "git",
+          url  => "git://github.com:jberger/Math-GSLx-ODEIV2.git",
+          web  => "http://github.com/jberger/Math-GSLx-ODEIV2"
+        },
+      },
+    },
     LIBS              => [ $gsl_libs ], # e.g., '-lm'
     DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
     INC               => '-I.', # e.g., '-I. -I/usr/include/other'
