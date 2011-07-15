@@ -56,7 +56,11 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
 
 }
 
-SV* c_ode_solver (SV* eqn, double t1, double t2, int steps, int stepper) {
+/* c_ode_solver needs stack to be clear when called,
+   I recommend `local @_;` before calling. */
+SV* c_ode_solver
+  (SV* eqn, double t1, double t2, int steps, 
+   int step_type_num, double h_step, double epsabs, double epsrel) {
 
   dSP;
 
@@ -68,17 +72,17 @@ SV* c_ode_solver (SV* eqn, double t1, double t2, int steps, int stepper) {
   AV* ret = newAV();
   gsl_odeiv2_step_type * step_type;
 
-  // create stepper, selected with $opt->{type}
+  // create step_type_num, selected with $opt->{type}
   // then .pm converts user choice to number
-  if (stepper == 1) {
+  if (step_type_num == 1) {
     step_type = gsl_odeiv2_step_rk2;
-  } else if (stepper == 2) {
+  } else if (step_type_num == 2) {
     step_type = gsl_odeiv2_step_rk4;
-  } else if (stepper == 3) {
+  } else if (step_type_num == 3) {
     step_type = gsl_odeiv2_step_rkf45;
-  } else if (stepper == 4) {
+  } else if (step_type_num == 4) {
     step_type = gsl_odeiv2_step_rkck;
-  } else if (stepper == 5) {
+  } else if (step_type_num == 5) {
     step_type = gsl_odeiv2_step_rk8pd;
   } else {
     warn("Could not determine step type, using rk8pd");
@@ -110,7 +114,7 @@ SV* c_ode_solver (SV* eqn, double t1, double t2, int steps, int stepper) {
      
   gsl_odeiv2_driver * d = 
     gsl_odeiv2_driver_alloc_y_new (&sys, step_type,
-   				    1e-6, 1e-6, 0.0);
+   				    h_step, epsabs, epsrel);
      
   for (i = 1; i <= steps; i++)
     {
@@ -147,9 +151,12 @@ char *
 get_gsl_version ()
 
 SV *
-c_ode_solver (eqn, t1, t2, steps, stepper)
+c_ode_solver (eqn, t1, t2, steps, step_type_num, h_step, epsabs, epsrel)
 	SV *	eqn
 	double	t1
 	double	t2
 	int	steps
-	int	stepper
+	int	step_type_num
+	double	h_step
+	double	epsabs
+	double	epsrel

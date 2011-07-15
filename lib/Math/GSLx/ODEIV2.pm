@@ -17,6 +17,8 @@ push @{$EXPORT_TAGS{all}}, @EXPORT, @EXPORT_OK;
 our $VERSION = '0.02';
 $VERSION = eval $VERSION;
 
+our $Verbose = 0;
+
 require XSLoader;
 XSLoader::load('Math::GSLx::ODEIV2', $VERSION);
 
@@ -33,6 +35,9 @@ sub ode_solver {
   my ($eqn, $t_range, $opts) = @_;
   croak "First argument must be a code reference" unless (ref $eqn eq 'CODE');
 
+  ## Parse Options ##
+
+  # Time range
   my @t_range;
   if (ref $t_range eq 'ARRAY') {
     @t_range = @$t_range;
@@ -43,21 +48,33 @@ sub ode_solver {
     croak "Could not understand 't range'"; 
   }
 
-  my $stepper = 0;
+  # Step type
+  my $step_type = 0;
   if ( exists $opts->{type} and exists $step_types{ $opts->{type} } ) {
-    $stepper = $step_types{ $opts->{type} };
+    $step_type = $step_types{ $opts->{type} };
   } 
 
-  unless ($stepper) {
-    carp "Using default step type 'rk8pd'\n";
-    $stepper = $step_types{rk8pd};
+  unless ($step_type) {
+    carp "Using default step type 'rk8pd'\n" if $Verbose;
+    $step_type = $step_types{rk8pd};
   }
 
-  my $result;
+  # Initial h_step
+  my $h_step = (exists $opts->{h_step}) ? $opts->{h_step} : 1e-6;
 
+  # Error levels
+  my $epsabs = (exists $opts->{epsabs}) ? $opts->{espabs} : 1e-6;
+  my $epsrel = (exists $opts->{epsrel}) ? $opts->{esprel} : 0.0;
+
+  ## Run Solver ##
+
+  # Run the solver at the C/XS level
+  my $result;
   {
     local @_; #be sure the stack is clear before calling c_ode_solver!
-    $result = c_ode_solver($eqn, @t_range, $stepper);
+    $result = c_ode_solver(
+      $eqn, @t_range, $step_type, $h_step, $epsabs, $epsrel
+    );
   }
 
   return $result;
