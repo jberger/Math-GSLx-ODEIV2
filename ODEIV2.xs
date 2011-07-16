@@ -70,7 +70,7 @@ SV* c_ode_solver
   double t = t1;
   double y[num];
   AV* ret = newAV();
-  gsl_odeiv2_step_type * step_type;
+  const gsl_odeiv2_step_type * step_type;
 
   // create step_type_num, selected with $opt->{type}
   // then .pm converts user choice to number
