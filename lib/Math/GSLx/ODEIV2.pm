@@ -74,7 +74,7 @@ sub ode_solver {
     } elsif ($opts->{scaling} eq 'yp') {
       ($a_y, $a_dydt) = (1, 0);
     } else {
-      carp "Could not understand error_type specification. Using defaults.";
+      carp "Could not understand scaling specification. Using defaults.";
     }
   }
 
