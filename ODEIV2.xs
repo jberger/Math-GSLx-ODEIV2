@@ -70,6 +70,7 @@ SV* c_ode_solver
   double t = t1;
   double y[num];
   AV* ret = newAV();
+  AV* intvals = newAV();
   const gsl_odeiv2_step_type * step_type;
 
   // create step_type_num, selected with $opt->{type}
@@ -105,6 +106,17 @@ SV* c_ode_solver
 
   FREETMPS;
   LEAVE;
+
+  // --------------------------------------------------
+  // this mechanism would change if using a PDL backend
+  // create a row of data containing the initial values
+  // then push intvals onto ret
+  av_push(intvals, newSVnv(t));
+  for (i = 0; i < num; i++) {
+    av_push(intvals, newSVnv(y[i]));
+  }
+  av_push(ret, newRV_inc((SV *)intvals));
+  // --------------------------------------------------
 
   struct params myparams;
   myparams.num = num;
