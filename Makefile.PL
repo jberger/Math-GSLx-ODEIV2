@@ -24,7 +24,9 @@ my $gsl_libs = qx! gsl-config --libs !;
 WriteMakefile(
     NAME              => 'Math::GSLx::ODEIV2',
     VERSION_FROM      => 'lib/Math/GSLx/ODEIV2.pm', # finds $VERSION
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
+    PREREQ_PM         => {
+      parent => 0,
+    }, # e.g., Module::Name => 1.1
     ABSTRACT_FROM     => 'lib/Math/GSLx/ODEIV2.pm', # retrieve abstract from module
     AUTHOR            => 'Joel Berger <joel.a.berger@gmail.com>',
     LICENSE           => 'perl',
