@@ -150,7 +150,7 @@ int store_data (SV* holder, int num, const double t, const double y[]) {
     av_push(data, newSVnv(y[i]));
   }
 
-  av_push((AV *)SvRV(holder), newRV_inc((SV *)data));
+  av_push((AV *)SvRV(holder), newRV_noinc((SV *)data));
 
   return 0;
 }
