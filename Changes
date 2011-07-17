@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::GSLx::ODEIV2.
 
+0.03  Sat Jul 16
+	- fixed some compile errors (Sisyphus++)
+	- added the initial conditions to the return from ode_solver
+
 0.02  Fri Jul 15 
 	- added error, h_step and step type options to ode_solver
 
