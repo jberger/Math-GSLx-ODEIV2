@@ -66,11 +66,9 @@ SV* c_ode_solver
 
   int num;
   int i;
-  int j;
   double t = t1;
   double y[num];
-  AV* ret = newAV();
-  AV* intvals = newAV();
+  SV* ret = newRV_noinc((SV*)newAV());
   const gsl_odeiv2_step_type * step_type;
 
   // create step_type_num, selected with $opt->{type}
@@ -107,16 +105,7 @@ SV* c_ode_solver
   FREETMPS;
   LEAVE;
 
-  // --------------------------------------------------
-  // this mechanism would change if using a PDL backend
-  // create a row of data containing the initial values
-  // then push intvals onto ret
-  av_push(intvals, newSVnv(t));
-  for (i = 0; i < num; i++) {
-    av_push(intvals, newSVnv(y[i]));
-  }
-  av_push(ret, newRV_inc((SV *)intvals));
-  // --------------------------------------------------
+  store_data(ret, num, t, y);
 
   struct params myparams;
   myparams.num = num;
@@ -144,18 +133,26 @@ SV* c_ode_solver
          rather than creating tons of SVs. Of course the current behavior
          should remain for those systems without PDL */
 
-      AV* data = newAV();
-      av_push(data, newSVnv(t));
-      for (j = 0; j < num; j++) {
-        av_push(data, newSVnv(y[j]));
-      }
-
-      av_push(ret, newRV_inc((SV *)data));
+      store_data(ret, num, t, y);
     }
      
   gsl_odeiv2_driver_free (d);
 
-  return newRV_inc((SV *)ret);
+  return ret;
+}
+
+int store_data (SV* holder, int num, const double t, const double y[]) {
+  int i;
+  AV* data = newAV();
+
+  av_push(data, newSVnv(t));
+  for (i = 0; i < num; i++) {
+    av_push(data, newSVnv(y[i]));
+  }
+
+  av_push((AV *)SvRV(holder), newRV_inc((SV *)data));
+
+  return 0;
 }
 
 
