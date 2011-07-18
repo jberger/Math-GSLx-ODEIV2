@@ -67,7 +67,7 @@ SV* c_ode_solver
   int num;
   int i;
   double t = t1;
-  double y[num];
+  double * y;
   SV* ret = newRV_noinc((SV*)newAV());
   const gsl_odeiv2_step_type * step_type;
 
@@ -94,6 +94,7 @@ SV* c_ode_solver
   PUSHMARK(SP);
 
   num = call_sv(eqn, G_ARRAY|G_NOARGS);
+  New(1, y, num, double);
 
   SPAGAIN;
 
@@ -136,7 +137,8 @@ SV* c_ode_solver
       store_data(ret, num, t, y);
     }
      
-  gsl_odeiv2_driver_free (d);
+  gsl_odeiv2_driver_free(d);
+  Safefree(y);
 
   return ret;
 }
