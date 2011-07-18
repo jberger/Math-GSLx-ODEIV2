@@ -116,7 +116,10 @@ SV* c_ode_solver
   PUSHMARK(SP);
 
   num = call_sv(eqn, G_ARRAY|G_NOARGS);
+
   New(1, y, num, double);
+  if(y == NULL) 
+    croak ("Failed to allocate memory to 'y' in 'c_ode_solver'");
 
   SPAGAIN;
 
