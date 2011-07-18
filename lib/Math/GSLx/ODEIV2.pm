@@ -14,7 +14,7 @@ our @EXPORT_OK = ( qw/ get_gsl_version get_step_types / );
 our %EXPORT_TAGS;
 push @{$EXPORT_TAGS{all}}, @EXPORT, @EXPORT_OK;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 $VERSION = eval $VERSION;
 
 our $Verbose = 0;
