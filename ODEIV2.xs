@@ -68,7 +68,7 @@ SV* c_ode_solver
   int i;
   double t = t1;
   double * y;
-  SV* ret = newRV_noinc((SV*)newAV());
+  SV* ret = make_container();
   const gsl_odeiv2_step_type * step_type;
 
   // create step_type_num, selected with $opt->{type}
@@ -141,6 +141,13 @@ SV* c_ode_solver
   Safefree(y);
 
   return ret;
+}
+
+// The following functions might be able to be substituted with PDL-based
+// equivalent functions, to be called if PDL is available.
+
+SV* make_container() {
+  return newRV_noinc((SV*)newAV());
 }
 
 int store_data (SV* holder, int num, const double t, const double y[]) {
