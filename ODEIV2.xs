@@ -56,6 +56,28 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
 
 }
 
+//--------------------------------------------
+// These functions when properly replaced could implement a PDL backend
+
+SV * make_container () {
+  return newRV_noinc((SV*)newAV());
+}
+
+int store_data (SV* holder, int num, const double t, const double y[]) {
+  int i;
+  AV* data = newAV();
+
+  av_push(data, newSVnv(t));
+  for (i = 0; i < num; i++) {
+    av_push(data, newSVnv(y[i]));
+  }
+
+  av_push((AV *)SvRV(holder), newRV_noinc((SV *)data));
+
+  return 0;
+}
+//--------------------------------------------
+
 /* c_ode_solver needs stack to be clear when called,
    I recommend `local @_;` before calling. */
 SV* c_ode_solver
@@ -68,7 +90,7 @@ SV* c_ode_solver
   int i;
   double t = t1;
   double * y;
-  SV* ret = newRV_noinc((SV*)newAV());
+  SV* ret = make_container();
   const gsl_odeiv2_step_type * step_type;
 
   // create step_type_num, selected with $opt->{type}
@@ -141,20 +163,6 @@ SV* c_ode_solver
   Safefree(y);
 
   return ret;
-}
-
-int store_data (SV* holder, int num, const double t, const double y[]) {
-  int i;
-  AV* data = newAV();
-
-  av_push(data, newSVnv(t));
-  for (i = 0; i < num; i++) {
-    av_push(data, newSVnv(y[i]));
-  }
-
-  av_push((AV *)SvRV(holder), newRV_noinc((SV *)data));
-
-  return 0;
 }
 
 
