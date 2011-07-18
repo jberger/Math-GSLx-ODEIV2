@@ -23,11 +23,11 @@ my $gsl_libs = qx! gsl-config --libs !;
 
 WriteMakefile(
     NAME              => 'Math::GSLx::ODEIV2',
-    VERSION_FROM      => 'lib/Math/GSLx/ODEIV2.pm', # finds $VERSION
+    VERSION_FROM      => 'lib/Math/GSLx/ODEIV2.pm',
     PREREQ_PM         => {
       parent => 0,
-    }, # e.g., Module::Name => 1.1
-    ABSTRACT_FROM     => 'lib/Math/GSLx/ODEIV2.pm', # retrieve abstract from module
+    },
+    ABSTRACT_FROM     => 'lib/Math/GSLx/ODEIV2.pm',
     AUTHOR            => 'Joel Berger <joel.a.berger@gmail.com>',
     LICENSE           => 'perl',
     META_MERGE        => {
@@ -45,3 +45,4 @@ WriteMakefile(
 	# Un-comment this if you add C files to link with later:
     # OBJECT            => '$(O_FILES)', # link all the C files too
 );
+
