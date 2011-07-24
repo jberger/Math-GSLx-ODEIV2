@@ -123,10 +123,9 @@ Math::GSLx::ODEIV2 - Solve ODEs using Perl and GSL v1.15+
    my ($t, @y) = @_;
    
    #example:   y''(t)==-y(t)
-   #i.e.:        ( y'=v, v'=-y ) 
    my @derivs = (
-     $y[1],
-     -$y[0],
+     $y[1],	# y'[0] = y[1]
+     -$y[0],	# y'[1] = - y[0]
    );
    return @derivs;
  }
@@ -223,7 +222,7 @@ C<scaling>, a shorthand for setting the above option. The available values may b
 
 =head3 return
 
-The return is an array reference of array references. Each element of the outer array reference will contain the time and function value of each function in order as above. This format allows easy loading into L<PDL> if so desired:
+The return is an array reference of array references. Each inner array reference will contain the time and function value of each function in order as above. This format allows easy loading into L<PDL> if so desired:
 
  $pdl = pdl($solution);
 
