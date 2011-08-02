@@ -95,19 +95,25 @@ SV* c_ode_solver
 
   // create step_type_num, selected with $opt->{type}
   // then .pm converts user choice to number
-  if (step_type_num == 1) {
-    step_type = gsl_odeiv2_step_rk2;
-  } else if (step_type_num == 2) {
-    step_type = gsl_odeiv2_step_rk4;
-  } else if (step_type_num == 3) {
-    step_type = gsl_odeiv2_step_rkf45;
-  } else if (step_type_num == 4) {
-    step_type = gsl_odeiv2_step_rkck;
-  } else if (step_type_num == 5) {
-    step_type = gsl_odeiv2_step_rk8pd;
-  } else {
-    warn("Could not determine step type, using rk8pd");
-    step_type = gsl_odeiv2_step_rk8pd;
+  switch (step_type_num) {
+    case 1:
+      step_type = gsl_odeiv2_step_rk2;
+      break;
+    case 2:
+      step_type = gsl_odeiv2_step_rk4;
+      break;
+    case 3:
+      step_type = gsl_odeiv2_step_rkf45;
+      break;
+    case 4:
+      step_type = gsl_odeiv2_step_rkck;
+      break;
+    case 5:
+      step_type = gsl_odeiv2_step_rk8pd;
+      break;
+    default:
+      warn("Could not determine step type, using rk8pd");
+      step_type = gsl_odeiv2_step_rk8pd;
   }
 
   ENTER;
