@@ -59,9 +59,24 @@ sub ode_solver {
     $step_type = $step_types{rk8pd};
   }
 
-  # Initial h_step
-  my $h_init = (exists $opts->{h_init}) ? $opts->{h_init} : 1e-6;
+  # h step configuration
+  my $h_init;
   my $h_max  = (exists $opts->{h_max} ) ? $opts->{h_max}  : 0;
+  if (exists $opts->{h_init}) {
+    $h_init = $opts->{h_init};
+
+    # if the user specifies an h_init greater than h_max then croak
+    if ($h_max && ($h_init > $h_max)) {
+      croak "h_init cannot be set greater than h_max";
+    }
+  } else {
+    $h_init = 1e-6;
+
+    # if the default h_init would be greater tha h_max then set h_init = h_max
+    if ($h_max && ($h_init > $h_max)) {
+      $h_init = $h_max;
+    }
+  }
 
   # Error levels
   my $epsabs = (exists $opts->{epsabs}) ? $opts->{epsabs} : 1e-6;
@@ -203,7 +218,7 @@ C<h_init> the initial "h" step used by the solver. Defaults to C<1e-6>.
 
 =item *
 
-C<h_max> the maximum "h" step allowed to the adaptive step size solver. Set to zero to use the default value specified the GSL, this is the default behavior if unspecified.
+C<h_max> the maximum "h" step allowed to the adaptive step size solver. Set to zero to use the default value specified the GSL, this is the default behavior if unspecified. Note: the module will croak if C<h_init> is set greater than C<h_max>, however if C<h_init> is not specified and the default would violate this relation, C<h_init> will be set to C<h_max> implicitly.
 
 =item * Error scaling options. These all refer to the adaptive step size contoller which is well documented in the L<GSL manual|http://www.gnu.org/software/gsl/manual/html_node/Adaptive-Step_002dsize-Control.html>. 
 
