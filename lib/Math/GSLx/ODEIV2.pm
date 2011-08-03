@@ -60,7 +60,8 @@ sub ode_solver {
   }
 
   # Initial h_step
-  my $h_step = (exists $opts->{h_step}) ? $opts->{h_step} : 1e-6;
+  my $h_init = (exists $opts->{h_init}) ? $opts->{h_init} : 1e-6;
+  my $h_max  = (exists $opts->{h_max} ) ? $opts->{h_max}  : 0;
 
   # Error levels
   my $epsabs = (exists $opts->{epsabs}) ? $opts->{epsabs} : 1e-6;
@@ -89,7 +90,7 @@ sub ode_solver {
   {
     local @_; #be sure the stack is clear before calling c_ode_solver!
     $result = c_ode_solver(
-      $eqn, @t_range, $step_type, $h_step, $epsabs, $epsrel, $a_y, $a_dydt
+      $eqn, @t_range, $step_type, $h_init, $h_max, $epsabs, $epsrel, $a_y, $a_dydt
     );
   }
 
@@ -198,7 +199,11 @@ C<type> specifies the step type to be used. The default is C<rk8pd>. The availab
 
 =item *
 
-C<h_step> the initial "h" step used by the solver. Defaults to C<1e-6>.
+C<h_init> the initial "h" step used by the solver. Defaults to C<1e-6>.
+
+=item *
+
+C<h_max> the maximum "h" step allowed to the adaptive step size solver. Set to zero to use the default value specified the GSL, this is the default behavior if unspecified.
 
 =item * Error scaling options. These all refer to the adaptive step size contoller which is well documented in the L<GSL manual|http://www.gnu.org/software/gsl/manual/html_node/Adaptive-Step_002dsize-Control.html>. 
 

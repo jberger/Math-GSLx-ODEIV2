@@ -81,7 +81,8 @@ int store_data (SV* holder, int num, const double t, const double y[]) {
 /* c_ode_solver needs stack to be clear when called,
    I recommend `local @_;` before calling. */
 SV* c_ode_solver
-  (SV* eqn, double t1, double t2, int steps, int step_type_num, double h_step,
+  (SV* eqn, double t1, double t2, int steps, int step_type_num,
+    double h_init, const double h_max,
     double epsabs, double epsrel, double a_y, double a_dydt) {
 
   dSP;
@@ -147,8 +148,11 @@ SV* c_ode_solver
      
   gsl_odeiv2_driver * d = 
     gsl_odeiv2_driver_alloc_standard_new (
-      &sys, step_type, h_step, epsabs, epsrel, a_y, a_dydt
+      &sys, step_type, h_init, epsabs, epsrel, a_y, a_dydt
     );
+
+  if ( h_max != 0 )
+    gsl_odeiv2_driver_set_hmax(d, h_max);
      
   for (i = 1; i <= steps; i++)
     {
@@ -184,13 +188,14 @@ char *
 get_gsl_version ()
 
 SV *
-c_ode_solver (eqn, t1, t2, steps, step_type_num, h_step, epsabs, epsrel, a_y, a_dydt)
+c_ode_solver (eqn, t1, t2, steps, step_type_num, h_init, h_max, epsabs, epsrel, a_y, a_dydt)
 	SV *	eqn
 	double	t1
 	double	t2
 	int	steps
 	int	step_type_num
-	double	h_step
+	double	h_init
+	double  h_max
 	double	epsabs
 	double	epsrel
 	double	a_y
