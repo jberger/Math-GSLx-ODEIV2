@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::GSLx::ODEIV2.
 
+0.05  Wed Aug 3
+	- C level memory allocation now emits error if not properly allocated
+	- Bugfix related to user configuration of epsabs and epsrel
+
 0.04  Sun Jul 17
 	- fixed problematic memory management (Sisyphus++)
 	- fixed (hopefully) reference count problem
