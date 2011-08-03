@@ -61,7 +61,7 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
       //if non numeric return store 0.0 and set badfunc
       //N.B. if I was sure about my C mem management I would just clear then break
       if (badfunc == 0) // only warn once
-        warn("Caught bad return\n");
+        warn("'ode_solver' has encountered a bad return value\n");
 
       f[num-i] = 0.0;
       badfunc = 1;
