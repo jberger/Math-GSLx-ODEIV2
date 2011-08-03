@@ -1,5 +1,8 @@
 Revision history for Perl extension Math::GSLx::ODEIV2.
 
+0.06
+	- Added h_max parameter and renamed h_step to h_init
+
 0.05  Wed Aug 3
 	- C level memory allocation now emits error if not properly allocated
 	- Bugfix related to user configuration of epsabs and epsrel
