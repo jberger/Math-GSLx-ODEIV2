@@ -63,8 +63,8 @@ sub ode_solver {
   my $h_step = (exists $opts->{h_step}) ? $opts->{h_step} : 1e-6;
 
   # Error levels
-  my $epsabs = (exists $opts->{epsabs}) ? $opts->{espabs} : 1e-6;
-  my $epsrel = (exists $opts->{epsrel}) ? $opts->{esprel} : 0.0;
+  my $epsabs = (exists $opts->{epsabs}) ? $opts->{epsabs} : 1e-6;
+  my $epsrel = (exists $opts->{epsrel}) ? $opts->{epsrel} : 0.0;
 
   # Error types (set error scaling with logical name)
   my ($a_y, $a_dydt) = (1, 0);
