@@ -35,7 +35,7 @@ sub eqn {
     $sin = ode_solver(\&eqn, [0, 2*3.14, 100]);
   }
 
-  is( $message, "Caught bad return\n", "Generated error message");
+  is( $message, "'ode_solver' has encountered a bad return value\n", "Generated error message");
 
   is( ref $sin, "ARRAY", "ode_solver returns array ref" );
 
