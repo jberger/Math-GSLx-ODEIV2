@@ -14,7 +14,7 @@ our @EXPORT_OK = ( qw/ get_gsl_version get_step_types / );
 our %EXPORT_TAGS;
 push @{$EXPORT_TAGS{all}}, @EXPORT, @EXPORT_OK;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 $VERSION = eval $VERSION;
 
 our $Verbose = 0;
@@ -181,6 +181,8 @@ If called without arguments (i.e. C<< $diffeq_code_ref->() >>) it should return 
 =item *
 
 When called with arguments, the first argument will be time (or the independent parameter) and the rest will be the function values in the same order as the initial conditions. The returns in this case should be the values of the derivatives of the function values. 
+
+If one or more of the returned values are not numbers (as determined by L<Scalar::Util> C<looks_like_number>), the solver will immediately return all calculations up until (and not including) this step, accompanied by a warning. This may be done intentionally to exit the solve routine earlier than the end time specified in the second argument.
 
 =item *
 
