@@ -34,6 +34,8 @@ sub eqn {
 
   is_deeply($sin->[0], [0,0,1], "Initial conditions are included in return"); 
 
+  is( scalar @$sin, 101, "Returned the requested number of elements");
+
   my ($pi_by_2) = grep { sprintf("%.2f", $_->[0]) == 1.57 } @$sin;
 
   is( ref $pi_by_2, "ARRAY", "each solved element is an array ref");

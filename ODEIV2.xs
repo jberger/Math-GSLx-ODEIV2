@@ -26,6 +26,9 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
   int count;
   int i;
 
+  SV* holder;
+  int badfunc = 0;
+
   ENTER;
   SAVETMPS;
 
@@ -45,12 +48,33 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
   SPAGAIN;
 
   for (i = 1; i <= num; i++) {
-    f[num-i] = POPn;
+    //f[num-i] = POPn;
+
+    //Get return
+    holder = POPs;
+
+    //Test for numeric return
+    if (looks_like_number(holder)) {
+      //if numeric return then save and move on
+      f[num-i] = SvNV(holder);
+    } else {
+      //if non numeric return store 0.0 and set badfunc
+      //N.B. if I was sure about my C mem management I would just clear then break
+      if (badfunc == 0) // only warn once
+        warn("Caught bad return\n");
+
+      f[num-i] = 0.0;
+      badfunc = 1;
+    }
+    
   }
   PUTBACK;
 
   FREETMPS;
   LEAVE;
+
+  if (badfunc)
+    return GSL_EBADFUNC;
 
   return GSL_SUCCESS;
 
@@ -161,7 +185,8 @@ SV* c_ode_solver
      
       if (status != GSL_SUCCESS)
         {
-          warn("error, return value=%d\n", status);
+          if (status != GSL_EBADFUNC) 
+            warn("error, return value=%d\n", status);
           break;
         }
 
