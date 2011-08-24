@@ -24,11 +24,22 @@ sub eqn {
   return @derivs;
 }
 
+sub jacobian {
+  my $jacobian = [
+    [1, 0],
+    [0, 1],
+  ];
+
+  my $dfdt = [0, 0];
+
+  return ($jacobian, $dfdt);
+}
+
 ## Test basic functionality ##
 
 {
 
-  my $sin = ode_solver(\&eqn, [0, 2*3.14, 100]);
+  my $sin = ode_solver([\&eqn, \&jacobian], [0, 2*3.14, 100], {type => 'bsimp'});
 
   is( ref $sin, "ARRAY", "ode_solver returns array ref" );
 

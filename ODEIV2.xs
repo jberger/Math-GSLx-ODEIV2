@@ -131,19 +131,22 @@ int jacobian (double t, const double y[], double *dfdy,
   FREETMPS;
   LEAVE;
 
-  if (av_len((AV*)SvRV(avr_jacobian)) != (num - 1))
-    warn("Jacobian array reference does not contain the specified number of rows"); 
+  count = av_len((AV*)SvRV(avr_jacobian));
+  if (count != (num - 1))
+    warn("Jacobian array reference does not contain the specified number of rows (expected %i, got %i)", num, count); 
 
-  if (av_len((AV*)SvRV(avr_dfdt)) != (num - 1))
-    warn("dfdt array reference does not contain the specified number of values");
+  count = av_len((AV*)SvRV(avr_dfdt));
+  if (count != (num - 1))
+    warn("dfdt array reference does not contain the specified number of values (expected %i, got %i)", num, count);
 
   // pack Jacobian values into a GSL matrix
   for (row = 1; row <= num; row++) {
     // get array reference to row-1 in 0 base notation
     avr_row = av_pop((AV*)SvRV(avr_jacobian));
 
-    if (av_len((AV*)SvRV(avr_row)) != (num - 1))
-      warn("Jacobian array reference row %i does not contain the specified number of columns", (row - 1));
+    count = av_len((AV*)SvRV(avr_row));
+    if (count != (num - 1))
+      warn("Jacobian array reference row %i does not contain the specified number of columns (expected %i, got %i)", (row - 1), num, count);
 
     for (column = 1; column <= num; column++) {
       // get value at (row-1, column-1) in 0 base notation

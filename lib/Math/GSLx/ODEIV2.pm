@@ -111,7 +111,7 @@ sub ode_solver {
   {
     local @_; #be sure the stack is clear before calling c_ode_solver!
     $result = c_ode_solver(
-      $eqn, undef, @t_range, $step_type, $h_init, $h_max, $epsabs, $epsrel, $a_y, $a_dydt
+      $eqn, $jac, @t_range, $step_type, $h_init, $h_max, $epsabs, $epsrel, $a_y, $a_dydt
     );
   }
 
