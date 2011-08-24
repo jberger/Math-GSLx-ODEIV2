@@ -128,9 +128,6 @@ int jacobian_matrix (double t, const double y[], double *dfdy,
 
   PUTBACK;
 
-  FREETMPS;
-  LEAVE;
-
   count = av_len((AV*)SvRV(avr_jacobian)) + 1;
   if (count != num)
     warn("Jacobian array reference does not contain the specified number of rows (expected %i, got %i)\n", num, count); 
@@ -188,6 +185,9 @@ int jacobian_matrix (double t, const double y[], double *dfdy,
     }
     
   }
+
+  FREETMPS;
+  LEAVE;
 
   if (badfunc)
     return GSL_EBADFUNC;
