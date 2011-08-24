@@ -15,6 +15,7 @@ char* get_gsl_version () {
 struct params {
   int num;
   SV* eqn;
+  SV* jac;
 };
 
 int diff_eqs (double t, const double y[], double f[], void *params) {
@@ -80,6 +81,78 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
 
 }
 
+int jacobian (double t, const double y[], double *dfdy, 
+          double dfdt[], void *params) {
+
+  dSP;
+
+  SV* jac = ((struct params *)params)->jac;
+  int num = ((struct params *)params)->num;
+  int count;
+  int i;
+
+  SV* holder;
+  SV* avr_jacobian;
+  SV* avr_dfdt;
+  int badfunc = 0;
+
+  ENTER;
+  SAVETMPS;
+
+  PUSHMARK(SP);
+
+  XPUSHs(sv_2mortal(newSVnv(t)));
+
+  for (i = 1; i <= num; i++) {
+    XPUSHs(sv_2mortal(newSVnv(y[i-1])));
+  }
+  PUTBACK;
+
+  count = call_sv(jac, G_ARRAY);
+  if (count != 2) 
+    warn("Jacobian did not return two items (arrayrefs)");
+
+  SPAGAIN;
+
+  avr_jacobian = POPs;
+  avr_dfdt = POPs;
+
+  PUTBACK;
+
+  FREETMPS;
+  LEAVE;
+
+  /*
+  for (i = 1; i <= num; i++) {
+    //f[num-i] = POPn;
+
+    //Get return
+    holder = POPs;
+
+    //Test for numeric return
+    if (looks_like_number(holder)) {
+      //if numeric return then save and move on
+      f[num-i] = SvNV(holder);
+    } else {
+      //if non numeric return store 0.0 and set badfunc
+      //N.B. if I was sure about my C mem management I would just clear then break
+      if (badfunc == 0) // only warn once
+        warn("'ode_solver' has encountered a bad return value\n");
+
+      f[num-i] = 0.0;
+      badfunc = 1;
+    }
+    
+  }
+  */
+
+  if (badfunc)
+    return GSL_EBADFUNC;
+
+  return GSL_SUCCESS;
+
+}
+
 //--------------------------------------------
 // These functions when properly replaced could implement a PDL backend
 
@@ -105,7 +178,7 @@ int store_data (SV* holder, int num, const double t, const double y[]) {
 /* c_ode_solver needs stack to be clear when called,
    I recommend `local @_;` before calling. */
 SV* c_ode_solver
-  (SV* eqn, double t1, double t2, int steps, int step_type_num,
+  (SV* eqn, SV* jac, double t1, double t2, int steps, int step_type_num,
     double h_init, const double h_max,
     double epsabs, double epsrel, double a_y, double a_dydt) {
 
@@ -117,6 +190,7 @@ SV* c_ode_solver
   double * y;
   SV* ret = make_container();
   const gsl_odeiv2_step_type * step_type;
+  int has_jacobian = SvOK(jac);
 
   // create step_type_num, selected with $opt->{type}
   // then .pm converts user choice to number
@@ -167,8 +241,11 @@ SV* c_ode_solver
   struct params myparams;
   myparams.num = num;
   myparams.eqn = eqn;
+  myparams.jac = jac;
 
   gsl_odeiv2_system sys = {diff_eqs, NULL, num, &myparams};
+  if (has_jacobian != 0) 
+    sys.jacobian = jacobian;
      
   gsl_odeiv2_driver * d = 
     gsl_odeiv2_driver_alloc_standard_new (
@@ -213,8 +290,9 @@ char *
 get_gsl_version ()
 
 SV *
-c_ode_solver (eqn, t1, t2, steps, step_type_num, h_init, h_max, epsabs, epsrel, a_y, a_dydt)
+c_ode_solver (eqn, jac, t1, t2, steps, step_type_num, h_init, h_max, epsabs, epsrel, a_y, a_dydt)
 	SV *	eqn
+	SV *	jac
 	double	t1
 	double	t2
 	int	steps
