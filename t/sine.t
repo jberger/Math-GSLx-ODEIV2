@@ -46,6 +46,9 @@ sub eqn {
 ## Test step type option ##
 
 foreach my $step_type (get_step_types()) {
+  #skip steps which require Jacobian
+  next if ($step_type eq 'bsimp');
+
   my $type_sin = ode_solver(\&eqn, [0, 2*3.14, 100], {type => $step_type});
   my ($type_pi_by_2) = grep { sprintf("%.2f", $_->[0]) == 1.57 } @$type_sin;
   is( sprintf("%.5f", $type_pi_by_2->[1]), sprintf("%.5f", 1), "found sin(pi/2) == 1 using {type => $step_type}");
