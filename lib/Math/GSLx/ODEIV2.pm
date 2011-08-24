@@ -34,7 +34,12 @@ my %step_types = (
 sub ode_solver {
 
   my ($eqn, $t_range, $opts) = @_;
-  croak "First argument must be a code reference" unless (ref $eqn eq 'CODE');
+  my $jac;
+  if (ref $eqn eq 'ARRAY') {
+    $jac = $eqn->[1] if defined $eqn->[1];
+    $eqn = $eqn->[0];
+  }
+  croak "First argument must specify one or more code references" unless (ref $eqn eq 'CODE');
 
   ## Parse Options ##
 
