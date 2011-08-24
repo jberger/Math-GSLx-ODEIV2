@@ -256,8 +256,30 @@ SV* c_ode_solver
     case 6:
       if (has_jacobian == 0) 
         warn ("The specified step type requires the Jacobian");
-
+      step_type = gsl_odeiv2_step_rk1imp;
+      break;
+    case 7:
+      if (has_jacobian == 0) 
+        warn ("The specified step type requires the Jacobian");
+      step_type = gsl_odeiv2_step_rk2imp;
+      break;
+    case 8:
+      if (has_jacobian == 0) 
+        warn ("The specified step type requires the Jacobian");
+      step_type = gsl_odeiv2_step_rk4imp;
+      break;
+    case 9:
+      if (has_jacobian == 0) 
+        warn ("The specified step type requires the Jacobian");
       step_type = gsl_odeiv2_step_bsimp;
+      break;
+    case 10:
+      step_type = gsl_odeiv2_step_msadams;
+      break;
+    case 11:
+      if (has_jacobian == 0) 
+        warn ("The specified step type requires the Jacobian");
+      step_type = gsl_odeiv2_step_msbdf;
       break;
     default:
       warn("Could not determine step type, using rk8pd");

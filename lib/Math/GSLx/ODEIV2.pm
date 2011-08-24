@@ -23,12 +23,17 @@ require XSLoader;
 XSLoader::load('Math::GSLx::ODEIV2', $VERSION);
 
 my %step_types = (
-  rk2   => 1,
-  rk4   => 2,
-  rkf45 => 3,
-  rkck  => 4,
-  rk8pd => 5,
-  bsimp => 6,
+  rk2   	=> 1,
+  rk4   	=> 2,
+  rkf45 	=> 3,
+  rkck  	=> 4,
+  rk8pd 	=> 5,
+  rk1imp_j	=> 6,
+  rk2imp_j	=> 7,
+  rk4imp_j	=> 8,  
+  bsimp_j 	=> 9,
+  msadams	=> 10,
+  msbdf_j	=> 11,
 );
 
 sub ode_solver {

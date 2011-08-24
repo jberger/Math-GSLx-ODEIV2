@@ -47,7 +47,7 @@ sub eqn {
 
 foreach my $step_type (get_step_types()) {
   #skip steps which require Jacobian
-  next if ($step_type eq 'bsimp');
+  next if ($step_type =~ /_j$/);
 
   my $type_sin = ode_solver(\&eqn, [0, 2*3.14, 100], {type => $step_type});
   my ($type_pi_by_2) = grep { sprintf("%.2f", $_->[0]) == 1.57 } @$type_sin;
