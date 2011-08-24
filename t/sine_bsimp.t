@@ -28,8 +28,8 @@ sub jacobian {
   my ($t, @y) = @_;
 
   my $jacobian = [
-    [1, 0],
     [0, 1],
+    [1, 0],
   ];
 
   my $dfdt = [0, 0];
