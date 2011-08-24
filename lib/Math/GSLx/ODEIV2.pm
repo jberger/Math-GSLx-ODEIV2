@@ -28,6 +28,7 @@ my %step_types = (
   rkf45 => 3,
   rkck  => 4,
   rk8pd => 5,
+  bsimp => 6,
 );
 
 sub ode_solver {
