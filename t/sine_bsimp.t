@@ -29,7 +29,7 @@ sub jacobian {
 
   my $jacobian = [
     [0, 1],
-    [1, 0],
+    [-1, 0],
   ];
 
   my $dfdt = [0, 0];

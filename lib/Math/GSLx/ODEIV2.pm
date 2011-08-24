@@ -176,7 +176,11 @@ This is the main function of the module.
 
 =head3 required arguments
 
-The first argument, C<$diffeq_code_ref>, is a code reference to a subroutine (or anonymous sub) which specifies the differential equations. This subroutine must have a specific construction:
+=head4 first argument
+
+The first argument may be either a code reference or an array reference containing one or two code references. 
+
+The first (required, either referenced directly or as the first (0th) element of an array reference) code reference (in the example C<$diffeq_code_ref>), is a code reference to a subroutine (or anonymous sub) which specifies the differential equations. This subroutine must have a specific construction:
 
 =over 
 
@@ -195,6 +199,33 @@ If one or more of the returned values are not numbers (as determined by L<Scalar
 Please note that as with other differential equation solvers, any higher order differential equations must be converted into systems of first order differential equations. 
 
 =back
+
+The second (optional, the second item in an array reference) code reference specifies the Jacobian of the differential system. Again, this code reference has a specific construction. The arguments will be passed in exactly the same way as for the equations code reference (though it will not be called without arguments). The returns should be two array references. 
+
+=over
+
+=item *
+
+The first is the Jacobian matrix formed as an array reference containing array references. It should be square where each dimension is equal to the number of differential equations. Each "row" contains the derivatives of the related differential equations with respect to each dependant parameter, respectively.
+
+ [
+  [ d(dy[0]/dt)/d(y[0]), d(dy[0]/dt)/d(y[1]), ... ],
+  [ d(dy[1]/dt)/d(y[0]), d(dy[1]/dt)/d(y[1]), ... ],
+  ...
+  [ ..., d(dy[n]/dt)/d(y[n])],
+ ]
+
+=item *
+
+The second returned array reference contains the derivatives of the differential equations with respect to the independant parameter.
+
+ [ d(dy[0]/dt)/dt, ..., d(dy[n]/dt)/dt ]
+
+=back
+
+The Jacobian code reference is only needed for certain step types, a comprehensive list will be forthcoming, in the interim please refer to the GSL documentation.
+
+=head4 second argument
 
 The second argument, C<$t_range>, specifies the time values that are used for the calculation. This may be used one of two ways:
 
@@ -218,7 +249,7 @@ The third argument, C<$opts_hashref>, is a hash reference containing other optio
 
 =item *
 
-C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>. They are those steps defined by the C<gsl_odeiv2> library which do not need special extras, most commonly this means those that do not require the Jacobian of the system.
+C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>. They are those steps defined by the C<gsl_odeiv2> library which do not need special extras, such as direct access to the driver object. This capability is planned for a future release, which should allow all GSL step types to be exposed to this module.
 
 =item *
 
@@ -275,6 +306,8 @@ A simple function taking no arguments and returning the version number of the GS
 =head1 FUTURE GOALS
 
 On systems with PDL installed, I would like to include some mechanism which will store the numerical data in a piddle directly, saving the overhead of creating an SV for each of the pieces of data generated. I envision this happening as transparently as possible when PDL is available. This will probably take some experimentation to get it right.
+
+The ability to include the Jacobian has been implemented, however most of the fuctions that require this also require direct access to the driver object. This shouldn't be hard to implement however it hasn't been added yet. Once it is most (all?) of the step types should be usable.
 
 =head1 SEE ALSO
 
