@@ -8,6 +8,8 @@ local $Data::Dumper::Indent = 0;
 
 BEGIN { use_ok('Math::GSLx::ODEIV2', ':all') };
 
+my $comp_level = "%0.4f";
+
 sub eqn {
 
   #initial conditions returned if called without parameters
@@ -39,7 +41,7 @@ sub eqn {
   my ($pi_by_2) = grep { sprintf("%.2f", $_->[0]) == 1.57 } @$sin;
 
   is( ref $pi_by_2, "ARRAY", "each solved element is an array ref");
-  is( sprintf("%.5f", $pi_by_2->[1]), sprintf("%.5f", 1), "found sin(pi/2) == 1");
+  is( sprintf($comp_level, $pi_by_2->[1]), sprintf($comp_level, 1), "found sin(pi/2) == 1");
 
 }
 
@@ -51,7 +53,7 @@ foreach my $step_type (get_step_types()) {
 
   my $type_sin = ode_solver(\&eqn, [0, 2*3.14, 100], {type => $step_type});
   my ($type_pi_by_2) = grep { sprintf("%.2f", $_->[0]) == 1.57 } @$type_sin;
-  is( sprintf("%.5f", $type_pi_by_2->[1]), sprintf("%.5f", 1), "found sin(pi/2) == 1 using {type => $step_type}");
+  is( sprintf($comp_level, $type_pi_by_2->[1]), sprintf($comp_level, 1), "found sin(pi/2) == 1 using {type => $step_type}");
 }
 
 ## Test error type options ##
@@ -68,7 +70,7 @@ foreach my $step_type (get_step_types()) {
   foreach my $error_test (@error_tests) {
     my $type_sin = ode_solver(\&eqn, [0, 2*3.14, 100], $error_test);
     my ($type_pi_by_2) = grep { sprintf("%.2f", $_->[0]) == 1.57 } @$type_sin;
-    is( sprintf("%.5f", $type_pi_by_2->[1]), sprintf("%.5f", 1), "found sin(pi/2) == 1 using " . Dumper $error_test);
+    is( sprintf($comp_level, $type_pi_by_2->[1]), sprintf($comp_level, 1), "found sin(pi/2) == 1 using " . Dumper $error_test);
   }
 
 }
