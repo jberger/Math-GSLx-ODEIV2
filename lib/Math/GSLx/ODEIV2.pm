@@ -228,7 +228,7 @@ The second returned array reference contains the derivatives of the differential
 
 =back
 
-The Jacobian code reference is only needed for certain step types, a comprehensive list will be forthcoming, in the interim please refer to the GSL documentation.
+The Jacobian code reference is only needed for certain step types, those step types whose names end in C<_j>.
 
 =head4 second argument
 
@@ -254,7 +254,7 @@ The third argument, C<$opts_hashref>, is a hash reference containing other optio
 
 =item *
 
-C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>. They are those steps defined by the C<gsl_odeiv2> library which do not need special extras, such as direct access to the driver object. This capability is planned for a future release, which should allow all GSL step types to be exposed to this module.
+C<type> specifies the step type to be used. The default is C<rk8pd>. The available step types can be found using the exportable function L</get_step_types>. Those step types whose name ends in C<_j> require the Jacobian.
 
 =item *
 
@@ -302,7 +302,7 @@ For a usage example see the L</SYNOPSIS> for a sine function given by C<y''(t)=-
 
 =head2 get_step_types
 
-Returns the available step types which may be specified in the L</ode_solver> function's options hashref.
+Returns the available step types which may be specified in the L</ode_solver> function's options hashref. Note that those step types whose name end in C<_j> require the Jacobian.
 
 =head2 get_gsl_version
 
@@ -311,8 +311,6 @@ A simple function taking no arguments and returning the version number of the GS
 =head1 FUTURE GOALS
 
 On systems with PDL installed, I would like to include some mechanism which will store the numerical data in a piddle directly, saving the overhead of creating an SV for each of the pieces of data generated. I envision this happening as transparently as possible when PDL is available. This will probably take some experimentation to get it right.
-
-The ability to include the Jacobian has been implemented, however most of the fuctions that require this also require direct access to the driver object. This shouldn't be hard to implement however it hasn't been added yet. Once it is most (all?) of the step types should be usable.
 
 =head1 SEE ALSO
 
