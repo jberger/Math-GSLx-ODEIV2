@@ -6,6 +6,7 @@
 
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv2.h>
+#include <gsl/gsl_matrix.h>
 #include <gsl/gsl_version.h>
 
 char* get_gsl_version () {
@@ -90,10 +91,18 @@ int jacobian (double t, const double y[], double *dfdy,
   int num = ((struct params *)params)->num;
   int count;
   int i;
+  int row;
+  int column;
 
-  SV* holder;
   SV* avr_jacobian;
   SV* avr_dfdt;
+
+  SV* avr_row;
+  SV* holder;
+
+  gsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, num, num);
+  gsl_matrix * m = &dfdy_mat.matrix; 
+
   int badfunc = 0;
 
   ENTER;
@@ -110,7 +119,7 @@ int jacobian (double t, const double y[], double *dfdy,
 
   count = call_sv(jac, G_ARRAY);
   if (count != 2) 
-    warn("Jacobian did not return two items (arrayrefs)");
+    warn("Jacobian code reference did not return two items (arrayrefs)");
 
   SPAGAIN;
 
@@ -122,29 +131,60 @@ int jacobian (double t, const double y[], double *dfdy,
   FREETMPS;
   LEAVE;
 
-  /*
-  for (i = 1; i <= num; i++) {
-    //f[num-i] = POPn;
+  if (av_len((AV*)SvRV(avr_jacobian)) != (num - 1))
+    warn("Jacobian array reference does not contain the specified number of rows"); 
 
-    //Get return
-    holder = POPs;
+  if (av_len((AV*)SvRV(avr_dfdt)) != (num - 1))
+    warn("dfdt array reference does not contain the specified number of values");
+
+  // pack Jacobian values into a GSL matrix
+  for (row = 1; row <= num; row++) {
+    // get array reference to row-1 in 0 base notation
+    avr_row = av_pop((AV*)SvRV(avr_jacobian));
+
+    if (av_len((AV*)SvRV(avr_row)) != (num - 1))
+      warn("Jacobian array reference row %i does not contain the specified number of columns", (row - 1));
+
+    for (column = 1; column <= num; column++) {
+      // get value at (row-1, column-1) in 0 base notation
+      holder = av_pop((AV*)SvRV(avr_row));
+
+      //Test for numeric return
+      if (looks_like_number(holder)) {
+        //if numeric return then save and move on
+        gsl_matrix_set (m, row, column, SvNV(holder));
+      } else {
+        //if non numeric return store 0.0 and set badfunc
+        //N.B. if I was sure about my C mem management I would just clear then break
+        if (badfunc == 0) // only warn once
+          warn("'ode_solver' has encountered a bad return value (in Jacobian at (%i, %i))\n", (row - 1), (column - 1));
+
+        gsl_matrix_set (m, row, column, 0.0);
+        badfunc = 1;
+      }
+    }
+  }
+
+  // pack dfdt 
+  for (i = 1; i <= num; i++) {
+    //Get next value
+    holder = av_pop((AV*)SvRV(avr_dfdt));
 
     //Test for numeric return
     if (looks_like_number(holder)) {
       //if numeric return then save and move on
-      f[num-i] = SvNV(holder);
+      dfdt[num-i] = SvNV(holder);
     } else {
       //if non numeric return store 0.0 and set badfunc
       //N.B. if I was sure about my C mem management I would just clear then break
       if (badfunc == 0) // only warn once
-        warn("'ode_solver' has encountered a bad return value\n");
+        warn("'ode_solver' has encountered a bad return value (in Jacobian dfdt)\n");
 
-      f[num-i] = 0.0;
+      dfdt[num-i] = 0.0;
       badfunc = 1;
     }
     
   }
-  */
 
   if (badfunc)
     return GSL_EBADFUNC;
