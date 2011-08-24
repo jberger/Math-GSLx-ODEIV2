@@ -25,6 +25,8 @@ sub eqn {
 }
 
 sub jacobian {
+  my ($t, @y) = @_;
+
   my $jacobian = [
     [1, 0],
     [0, 1],

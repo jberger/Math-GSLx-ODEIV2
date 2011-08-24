@@ -82,7 +82,7 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
 
 }
 
-int jacobian (double t, const double y[], double *dfdy, 
+int jacobian_matrix (double t, const double y[], double *dfdy, 
           double dfdt[], void *params) {
 
   dSP;
@@ -123,34 +123,34 @@ int jacobian (double t, const double y[], double *dfdy,
 
   SPAGAIN;
 
-  avr_jacobian = POPs;
   avr_dfdt = POPs;
+  avr_jacobian = POPs;
 
   PUTBACK;
 
   FREETMPS;
   LEAVE;
 
-  count = av_len((AV*)SvRV(avr_jacobian));
-  if (count != (num - 1))
-    warn("Jacobian array reference does not contain the specified number of rows (expected %i, got %i)", num, count); 
+  count = av_len((AV*)SvRV(avr_jacobian)) + 1;
+  if (count != num)
+    warn("Jacobian array reference does not contain the specified number of rows (expected %i, got %i)\n", num, count); 
 
-  count = av_len((AV*)SvRV(avr_dfdt));
-  if (count != (num - 1))
-    warn("dfdt array reference does not contain the specified number of values (expected %i, got %i)", num, count);
+  count = av_len((AV*)SvRV(avr_dfdt)) + 1;
+  if (count != num)
+    warn("dfdt array reference does not contain the specified number of values (expected %i, got %i)\n", num, count);
 
   // pack Jacobian values into a GSL matrix
-  for (row = 1; row <= num; row++) {
+  for (row = 0; row < num; row++) {
     // get array reference to row-1 in 0 base notation
-    avr_row = av_pop((AV*)SvRV(avr_jacobian));
+    avr_row = av_shift((AV*)SvRV(avr_jacobian));
 
-    count = av_len((AV*)SvRV(avr_row));
-    if (count != (num - 1))
-      warn("Jacobian array reference row %i does not contain the specified number of columns (expected %i, got %i)", (row - 1), num, count);
+    count = av_len((AV*)SvRV(avr_row)) + 1;
+    if (count != num)
+      warn("Jacobian array reference row %i does not contain the specified number of columns (expected %i, got %i)\n", row, num, count);
 
-    for (column = 1; column <= num; column++) {
+    for (column = 0; column < num; column++) {
       // get value at (row-1, column-1) in 0 base notation
-      holder = av_pop((AV*)SvRV(avr_row));
+      holder = av_shift((AV*)SvRV(avr_row));
 
       //Test for numeric return
       if (looks_like_number(holder)) {
@@ -160,7 +160,7 @@ int jacobian (double t, const double y[], double *dfdy,
         //if non numeric return store 0.0 and set badfunc
         //N.B. if I was sure about my C mem management I would just clear then break
         if (badfunc == 0) // only warn once
-          warn("'ode_solver' has encountered a bad return value (in Jacobian at (%i, %i))\n", (row - 1), (column - 1));
+          warn("'ode_solver' has encountered a bad return value (in Jacobian at (%i, %i))\n", row, column);
 
         gsl_matrix_set (m, row, column, 0.0);
         badfunc = 1;
@@ -171,7 +171,7 @@ int jacobian (double t, const double y[], double *dfdy,
   // pack dfdt 
   for (i = 1; i <= num; i++) {
     //Get next value
-    holder = av_pop((AV*)SvRV(avr_dfdt));
+    holder = av_shift((AV*)SvRV(avr_dfdt));
 
     //Test for numeric return
     if (looks_like_number(holder)) {
@@ -294,7 +294,7 @@ SV* c_ode_solver
 
   gsl_odeiv2_system sys = {diff_eqs, NULL, num, &myparams};
   if (has_jacobian != 0) 
-    sys.jacobian = jacobian;
+    sys.jacobian = jacobian_matrix;
      
   gsl_odeiv2_driver * d = 
     gsl_odeiv2_driver_alloc_standard_new (
