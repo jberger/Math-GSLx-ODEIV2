@@ -5,4 +5,6 @@ ODEIV2.xs
 ppport.h
 README
 t/sine.t
+t/sine_bad.t
+t/sine_jacobian.t
 lib/Math/GSLx/ODEIV2.pm
