@@ -8,3 +8,5 @@ t/sine_bad.t
 t/sine_jacobian.t
 lib/Math/GSLx/ODEIV2.pm
 lib/Math/GSLx/ODEIV2.xs
+src/common.c
+inc/common.h
