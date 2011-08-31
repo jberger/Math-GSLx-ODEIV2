@@ -9,7 +9,7 @@
 //--------------------------------------------
 // These functions when properly replaced could implement a PDL backend
 
-SV * make_container () {
+SV * make_container (int num, int steps) {
   return newRV_noinc((SV*)newAV());
 }
 

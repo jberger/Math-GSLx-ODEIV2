@@ -205,7 +205,7 @@ SV* c_ode_solver
   int i;
   double t = t1;
   double * y;
-  SV* ret = make_container();
+  SV* ret;
   const gsl_odeiv2_step_type * step_type;
   int has_jacobian = SvOK(jac);
 
@@ -281,6 +281,7 @@ SV* c_ode_solver
   FREETMPS;
   LEAVE;
 
+  ret = make_container(num, steps);
   store_data(ret, num, t, y);
 
   struct params myparams;
