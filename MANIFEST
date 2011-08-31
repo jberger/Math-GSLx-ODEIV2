@@ -1,7 +1,6 @@
 Changes
 Build.PL
 MANIFEST
-ppport.h
 README
 t/sine.t
 t/sine_bad.t
@@ -10,3 +9,4 @@ lib/Math/GSLx/ODEIV2.pm
 lib/Math/GSLx/ODEIV2.xs
 src/common.c
 inc/common.h
+inc/ppport.h
