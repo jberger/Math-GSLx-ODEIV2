@@ -68,7 +68,7 @@ sub ode_solver {
     if ($want_pdl) {
       carp "PDL return is not yet implemented";
     } else {
-      carp "Perl AoA unroll from PDL backend is not yet implemented";
+      #carp "Perl AoA unroll from PDL backend is not yet implemented";
     }
   } else {
     if ($want_pdl) {
