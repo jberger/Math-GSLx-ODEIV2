@@ -2,9 +2,6 @@
 #include "perl.h"
 #include "XSUB.h"
 
-#define NEED_newRV_noinc
-#include "ppport.h"
-
 #include "common.h"
 
 MODULE = Math::GSLx::ODEIV2	PACKAGE = Math::GSLx::ODEIV2	
