@@ -8,5 +8,7 @@ t/sine_jacobian.t
 lib/Math/GSLx/ODEIV2.pm
 lib/Math/GSLx/ODEIV2.xs
 src/common.c
+src/container.c
 inc/common.h
+inc/container.h
 inc/ppport.h
