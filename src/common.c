@@ -10,6 +10,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_version.h>
 
+#include "container.h"
 #include "common.h"
 
 char* get_gsl_version () {
