@@ -2,12 +2,13 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#define NEED_newRV_noinc
 #include "ppport.h"
 
 #include "common.h"
 
-//--------------------------------------------
-// These functions when properly replaced could implement a PDL backend
+/* -------------------------------------------- */
+/* These functions when properly replaced could implement a PDL backend */
 
 SV * make_container (int num, int steps) {
   return newRV_noinc((SV*)newAV());
@@ -26,7 +27,7 @@ int store_data (SV* holder, int num, const double t, const double y[]) {
 
   return 0;
 }
-//--------------------------------------------
+/* -------------------------------------------- */
 
 
 
