@@ -2,6 +2,8 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#define NEED_newRV_noinc
+#define NEED_sv_2pv_flags
 #include "ppport.h"
 
 #include <gsl/gsl_errno.h>
@@ -46,19 +48,17 @@ int diff_eqs (double t, const double y[], double f[], void *params) {
   SPAGAIN;
 
   for (i = 1; i <= num; i++) {
-    //f[num-i] = POPn;
-
-    //Get return
+    /* Get return */
     holder = POPs;
 
-    //Test for numeric return
+    /* Test for numeric return */
     if (looks_like_number(holder)) {
-      //if numeric return then save and move on
+      /* if numeric return then save and move on */
       f[num-i] = SvNV(holder);
     } else {
-      //if non numeric return store 0.0 and set badfunc
-      //N.B. if I was sure about my C mem management I would just clear then break
-      if (badfunc == 0) // only warn once
+      /* if non numeric return store 0.0 and set badfunc
+         N.B. if I was sure about my C mem management I would just clear then break */
+      if (badfunc == 0) /* only warn once */
         warn("'ode_solver' has encountered a bad return value\n");
 
       f[num-i] = 0.0;
@@ -132,9 +132,9 @@ int jacobian_matrix (double t, const double y[], double *dfdy,
   if (count != num)
     warn("dfdt array reference does not contain the specified number of values (expected %i, got %i)\n", num, count);
 
-  // pack Jacobian values into a GSL matrix
+  /* pack Jacobian values into a GSL matrix */
   for (row = 0; row < num; row++) {
-    // get array reference to row-1 in 0 base notation
+    /* get array reference to row-1 in 0 base notation */
     avr_row = av_shift((AV*)SvRV(avr_jacobian));
 
     count = av_len((AV*)SvRV(avr_row)) + 1;
@@ -142,17 +142,17 @@ int jacobian_matrix (double t, const double y[], double *dfdy,
       warn("Jacobian array reference row %i does not contain the specified number of columns (expected %i, got %i)\n", row, num, count);
 
     for (column = 0; column < num; column++) {
-      // get value at (row-1, column-1) in 0 base notation
+      /* get value at (row-1, column-1) in 0 base notation */
       holder = av_shift((AV*)SvRV(avr_row));
 
-      //Test for numeric return
+      /* Test for numeric return */
       if (looks_like_number(holder)) {
-        //if numeric return then save and move on
+        /* if numeric return then save and move on */
         gsl_matrix_set (m, row, column, SvNV(holder));
       } else {
-        //if non numeric return store 0.0 and set badfunc
-        //N.B. if I was sure about my C mem management I would just clear then break
-        if (badfunc == 0) // only warn once
+        /* if non numeric return store 0.0 and set badfunc
+           N.B. if I was sure about my C mem management I would just clear then break */
+        if (badfunc == 0) /* only warn once */
           warn("'ode_solver' has encountered a bad return value (in Jacobian at (%i, %i))\n", row, column);
 
         gsl_matrix_set (m, row, column, 0.0);
@@ -161,19 +161,19 @@ int jacobian_matrix (double t, const double y[], double *dfdy,
     }
   }
 
-  // pack dfdt 
+  /* pack dfdt */
   for (i = 1; i <= num; i++) {
-    //Get next value
+    /* Get next value */
     holder = av_shift((AV*)SvRV(avr_dfdt));
 
-    //Test for numeric return
+    /* Test for numeric return */
     if (looks_like_number(holder)) {
-      //if numeric return then save and move on
+      /* if numeric return then save and move on */
       dfdt[num-i] = SvNV(holder);
     } else {
-      //if non numeric return store 0.0 and set badfunc
-      //N.B. if I was sure about my C mem management I would just clear then break
-      if (badfunc == 0) // only warn once
+      /* if non numeric return store 0.0 and set badfunc
+         N.B. if I was sure about my C mem management I would just clear then break */
+      if (badfunc == 0) /* only warn once */
         warn("'ode_solver' has encountered a bad return value (in Jacobian dfdt)\n");
 
       dfdt[num-i] = 0.0;
@@ -209,8 +209,8 @@ SV* c_ode_solver
   const gsl_odeiv2_step_type * step_type;
   int has_jacobian = SvOK(jac);
 
-  // create step_type_num, selected with $opt->{type}
-  // then .pm converts user choice to number
+  /* create step_type_num, selected with $opt->{type}
+     then .pm converts user choice to number */
   switch (step_type_num) {
     case 1:
       step_type = gsl_odeiv2_step_rk2;
@@ -267,7 +267,7 @@ SV* c_ode_solver
 
   num = call_sv(eqn, G_ARRAY|G_NOARGS);
 
-  New(1, y, num, double);
+  Newx(y, num, double);
   if(y == NULL) 
     croak ("Failed to allocate memory to 'y' in 'c_ode_solver'");
 
