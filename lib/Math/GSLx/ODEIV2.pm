@@ -171,13 +171,23 @@ Why the C<Math::GSLx::> namespace? Well since Jonathan Leto has been kind enough
 
 This module is in an alpha state. It needs more tests and the ability to configure more of the options that the GSL library allows. Currently this module leans on the fact that GSL has an extensive test suite. While the author has put some thought into the interface it may change in the future as the above mentioned functionality is added or as bugs appear. Bug reports are encouraged!
 
+Also, as of version 0.06, support for including a Jacobian of the system has been added, including the step types that this allows, however this functionality is almost totally untested. Until some of the stiff/extreme test cases can be ported from GSL the author is not certain the the functionality has been properly implemented. Sadly C<t/sine.*> pass even when not properly implemented, which is unnerving. I<Caveat emptor>.
+
 =head1 EXPORTED FUNCTIONS
 
 =head2 ode_solver
 
 This is the main function of the module. 
 
- $solution = ode_solver( $diffeq_code_ref, $t_range [, $opts_hashref ])
+ $solution = ode_solver( $diffeq_code_ref, $t_range)
+
+or
+
+ $solution = ode_solver( $diffeq_code_ref, $t_range, $opts_hashref)
+
+or
+
+ $solution = ode_solver( [$diffeq_code_ref, $jacobian_code_ref], $t_range, $opts_hashref)
 
 =head3 required arguments
 
