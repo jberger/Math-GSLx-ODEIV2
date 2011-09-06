@@ -24,6 +24,8 @@ if ($gsl_version < $min_gsl_version) {
 
 my $gsl_libs = qx! gsl-config --libs !;
 
+my $have_pdl = Module::Build->check_installed_version('PDL', 0);
+
 my $build = Module::Build->new(
     module_name       => 'Math::GSLx::ODEIV2',
     dist_version_from => 'lib/Math/GSLx/ODEIV2.pm',
@@ -54,6 +56,8 @@ my $build = Module::Build->new(
     #  },
     #},
 );
+
+$build->config_data('have_pdl', $have_pdl);
 
 $build->create_build_script;
 
