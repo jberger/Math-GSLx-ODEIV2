@@ -25,6 +25,8 @@ if ($gsl_version < $min_gsl_version) {
 my $gsl_libs = qx! gsl-config --libs !;
 
 my $have_pdl = Module::Build->check_installed_status('PDL')->{ok};
+my $extra_compiler_flags .=
+  '-Iinc' . ( $have_pdl ? ' -DMATH_GSLX_ODEIV2_USE_PDL' : '' );
 
 my $build = Module::Build->new(
     module_name       => 'Math::GSLx::ODEIV2',
@@ -44,7 +46,7 @@ my $build = Module::Build->new(
     },
     xs_files => {'ODEIV2.xs' => 'lib/Math/GSLx/ODEIV2.xs'},
     c_source => 'src',
-    extra_compiler_flags => '-Iinc',
+    extra_compiler_flags => $extra_compiler_flags,
     extra_linker_flags => $gsl_libs,
     #meta_merge        => {
     #  resources => {
