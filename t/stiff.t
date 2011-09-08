@@ -1,9 +1,11 @@
 use strict;
 use warnings;
 
-use Test::More;
+#use Test::More;
 
-BEGIN{ use_ok('Math::GSLx::ODEIV2'); }
+#BEGIN{ use_ok('Math::GSLx::ODEIV2'); }
+use Math::GSLx::ODEIV2;
+use Data::Dumper;
 
 my $eqn_oregonator = sub {
 
@@ -38,17 +40,17 @@ my $jac_oregonator = sub {
   my @dfdy;
   my @dfdt;
 
-  $dfdy[0] = $c1 * (1 - 2 * $c2 * $y[0] - $y[1]);
-  $dfdy[1] = $c1 * (1 - $y[0]);
-  $dfdy[2] = 0.0;
+  $dfdy[0][0] = $c1 * (1 - 2 * $c2 * $y[0] - $y[1]);
+  $dfdy[0][1] = $c1 * (1 - $y[0]);
+  $dfdy[0][2] = 0.0;
 
-  $dfdy[3] = 1 / $c1 * (-$y[1]);
-  $dfdy[4] = 1 / $c1 * (-1 - $y[0]);
-  $dfdy[5] = 1 / $c1;
+  $dfdy[1][0] = 1 / $c1 * (-$y[1]);
+  $dfdy[1][1] = 1 / $c1 * (-1 - $y[0]);
+  $dfdy[1][2] = 1 / $c1;
 
-  $dfdy[6] = $c3;
-  $dfdy[7] = 0.0;
-  $dfdy[8] = -$c3;
+  $dfdy[2][0] = $c3;
+  $dfdy[2][1] = 0.0;
+  $dfdy[2][2] = -$c3;
 
   $dfdt[0] = 0.0;
   $dfdt[1] = 0.0;
@@ -58,4 +60,6 @@ my $jac_oregonator = sub {
 
 };
 
-my $res_oregonator = ode_solver([$eqn_oregonator, $jac_oregonator], [0, 360, 100], {});
+my $res_oregonator = ode_solver([$eqn_oregonator, $jac_oregonator], [0, 26, 100], {step_type => "rk1imp_j", epsabs => 1e-40, epsrel => 1e-7, h_init => 1e-5 });
+print Dumper $res_oregonator->[-1];
+
