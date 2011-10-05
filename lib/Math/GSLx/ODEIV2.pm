@@ -213,7 +213,7 @@ Please note that as with other differential equation solvers, any higher order d
 
 =back
 
-Optionally the system may be further described with a code reference which defines the Jacobian of the system. Again, this code reference has a specific construction. The arguments will be passed in exactly the same way as for the equations code reference (though it will not be called without arguments). The returns should be two array references. 
+Optionally the system may be further described with a code reference which defines the Jacobian of the system (in the example C<$jacobian_code_ref>). Again, this code reference has a specific construction. The arguments will be passed in exactly the same way as for the equations code reference (though it will not be called without arguments). The returns should be two array references. 
 
 =over
 
