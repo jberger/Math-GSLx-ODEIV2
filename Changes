@@ -2,8 +2,8 @@ Revision history for Perl extension Math::GSLx::ODEIV2.
 
 0.06
 	- Added h_max parameter and renamed h_step to h_init
+	- Added Jacobian handling and with it the remaining step types
 	- Added error handling to ode_solver when equation returns a non-number
-	- Added Jacobian handling and with it the "gsl_odeiv2_step_bsimp" step type
 
 0.05  Wed Aug 3
 	- C level memory allocation now emits error if not properly allocated

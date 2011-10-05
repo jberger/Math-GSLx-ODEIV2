@@ -189,13 +189,11 @@ or
 
  $solution = ode_solver( [$diffeq_code_ref, $jacobian_code_ref], $t_range, $opts_hashref)
 
-=head3 required arguments
+Before detailing how to call C<ode_solver>, lets see how to construct the differential equation system.
 
-=head4 first argument
+=head3 the differential equation system
 
-The first argument may be either a code reference or an array reference containing one or two code references. 
-
-The first (required, either referenced directly or as the first (0th) element of an array reference) code reference (in the example C<$diffeq_code_ref>), is a code reference to a subroutine (or anonymous sub) which specifies the differential equations. This subroutine must have a specific construction:
+The differential equation system is defined in a code reference (in the example C<$diffeq_code_ref>). This code reference (or anonymous subroutine) must have a specific construction:
 
 =over 
 
@@ -215,7 +213,7 @@ Please note that as with other differential equation solvers, any higher order d
 
 =back
 
-The second (optional, the second item in an array reference) code reference specifies the Jacobian of the differential system. Again, this code reference has a specific construction. The arguments will be passed in exactly the same way as for the equations code reference (though it will not be called without arguments). The returns should be two array references. 
+Optionally the system may be further described with a code reference which defines the Jacobian of the system. Again, this code reference has a specific construction. The arguments will be passed in exactly the same way as for the equations code reference (though it will not be called without arguments). The returns should be two array references. 
 
 =over
 
@@ -239,6 +237,14 @@ The second returned array reference contains the derivatives of the differential
 =back
 
 The Jacobian code reference is only needed for certain step types, those step types whose names end in C<_j>.
+
+=head3 required arguments
+
+C<ode_solver> requires two arguments, they are as follows:
+
+=head4 first argument
+
+The first argument may be either a code reference or an array reference containing one or two code references. In the single code reference form this represents the differential equation system, constructed as described above. In the array reference form, the first argument must be the differential equation system code reference, but now optionally a code reference for the Jacobian of the system may be supplied as the second item.
 
 =head4 second argument
 
