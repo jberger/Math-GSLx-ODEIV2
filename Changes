@@ -1,6 +1,6 @@
 Revision history for Perl extension Math::GSLx::ODEIV2.
 
-0.06
+0.06  Wed Oct 5
 	- Added h_max parameter and renamed h_step to h_init
 	- Added Jacobian handling and with it the remaining step types
 	- Added error handling to ode_solver when equation returns a non-number
