@@ -49,13 +49,12 @@ sub ode_solver {
   ## Parse Options ##
 
   # Time range
-  my @t_range;
-  if (ref $t_range eq 'ARRAY') {
-    @t_range = @$t_range;
-  } elsif (looks_like_number $t_range) {
+  if (looks_like_number $t_range) {
     #if $t_range is a single number assume t starts at 0 and has 100 steps
-    @t_range = (0, $t_range, 100);
-  } else {
+    $t_range = [0, $t_range, 100];
+  } 
+
+  unless (ref $t_range eq 'ARRAY') {
     croak "Could not understand 't range'"; 
   }
 
@@ -116,7 +115,7 @@ sub ode_solver {
   {
     local @_; #be sure the stack is clear before calling c_ode_solver!
     $result = c_ode_solver(
-      $eqn, $jac, @t_range, $step_type, $h_init, $h_max, $epsabs, $epsrel, $a_y, $a_dydt
+      $eqn, $jac, @$t_range, $step_type, $h_init, $h_max, $epsabs, $epsrel, $a_y, $a_dydt
     );
   }
 
