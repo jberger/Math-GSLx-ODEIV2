@@ -235,6 +235,8 @@ SV* c_ode_solver
   const gsl_odeiv2_step_type * step_type;
   int has_jacobian = SvOK(jac);
 
+  double step_size = (t2 - t1) / steps;
+
   /* create step_type_num, selected with $opt->{type}
      then .pm converts user choice to number */
   switch (step_type_num) {
@@ -328,7 +330,7 @@ SV* c_ode_solver
      
   for (i = 1; i <= steps; i++)
     {
-      double ti = i * t2 / steps;
+      double ti = i * step_size + t1;
       int status = gsl_odeiv2_driver_apply (d, &t, ti, y);
      
       if (status != GSL_SUCCESS)

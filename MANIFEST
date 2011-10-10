@@ -4,6 +4,9 @@ MANIFEST
 ODEIV2.xs
 ppport.h
 README
+t/00-use.t
+t/odes_simple.t
+t/ode_system.t
 t/sine.t
 t/sine_bad.t
 t/sine_jacobian.t
