@@ -7,4 +7,5 @@ README
 t/sine.t
 t/sine_bad.t
 t/sine_jacobian.t
+t/simple_odes.t
 lib/Math/GSLx/ODEIV2.pm
