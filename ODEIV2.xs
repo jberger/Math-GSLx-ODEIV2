@@ -328,7 +328,7 @@ SV* c_ode_solver
      
   for (i = 1; i <= steps; i++)
     {
-      double ti = i * t2 / steps;
+      double ti = i * (t2 - t1) / steps + t1;
       int status = gsl_odeiv2_driver_apply (d, &t, ti, y);
      
       if (status != GSL_SUCCESS)

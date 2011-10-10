@@ -49,14 +49,14 @@ sub ode_solver {
   ## Parse Options ##
 
   # Time range
-  if (looks_like_number $t_range) {
-    #if $t_range is a single number assume t starts at 0 and has 100 steps
-    $t_range = [0, $t_range, 100];
-  } 
-
   unless (ref $t_range eq 'ARRAY') {
-    croak "Could not understand 't range'"; 
-  }
+    if (looks_like_number $t_range) {
+      #if $t_range is a single number assume t starts at 0 and has 100 steps
+      $t_range = [0, $t_range, 100];
+    } else {
+      croak "Could not understand 't range'";
+    }
+  } 
 
   # Step type
   my $step_type = 0;
