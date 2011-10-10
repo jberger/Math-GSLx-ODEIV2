@@ -2,7 +2,6 @@
 #include "perl.h"
 #include "XSUB.h"
 
-#define NEED_newRV_noinc
 #define NEED_sv_2pv_flags
 #include "ppport.h"
 
@@ -11,15 +10,12 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_version.h>
 
+#include "container.h"
+#include "common.h"
+
 char* get_gsl_version () {
   return GSL_VERSION;
 }
-
-struct params {
-  int num;
-  SV* eqn;
-  SV* jac;
-};
 
 int diff_eqs (double t, const double y[], double f[], void *params) {
 
@@ -196,28 +192,6 @@ int jacobian_matrix (double t, const double y[], double *dfdy,
 
 }
 
-/* -------------------------------------------- */
-/* These functions when properly replaced could implement a PDL backend */
-
-SV * make_container () {
-  return newRV_noinc((SV*)newAV());
-}
-
-int store_data (SV* holder, int num, const double t, const double y[]) {
-  int i;
-  AV* data = newAV();
-
-  av_push(data, newSVnv(t));
-  for (i = 0; i < num; i++) {
-    av_push(data, newSVnv(y[i]));
-  }
-
-  av_push((AV *)SvRV(holder), newRV_noinc((SV *)data));
-
-  return 0;
-}
-/* -------------------------------------------- */
-
 /* c_ode_solver needs stack to be clear when called,
    I recommend `local @_;` before calling. */
 SV* c_ode_solver
@@ -231,7 +205,7 @@ SV* c_ode_solver
   int i;
   double t = t1;
   double * y;
-  SV* ret = make_container();
+  SV* ret;
   const gsl_odeiv2_step_type * step_type;
   int has_jacobian = SvOK(jac);
 
@@ -309,6 +283,7 @@ SV* c_ode_solver
   FREETMPS;
   LEAVE;
 
+  ret = make_container(num, steps);
   store_data(ret, num, t, y);
 
   struct params myparams;
@@ -353,26 +328,3 @@ SV* c_ode_solver
   return ret;
 }
 
-
-MODULE = Math::GSLx::ODEIV2	PACKAGE = Math::GSLx::ODEIV2	
-
-PROTOTYPES: DISABLE
-
-
-char *
-get_gsl_version ()
-
-SV *
-c_ode_solver (eqn, jac, t1, t2, steps, step_type_num, h_init, h_max, epsabs, epsrel, a_y, a_dydt)
-	SV *	eqn
-	SV *	jac
-	double	t1
-	double	t2
-	int	steps
-	int	step_type_num
-	double	h_init
-	double  h_max
-	double	epsabs
-	double	epsrel
-	double	a_y
-	double	a_dydt

@@ -4,6 +4,8 @@ use 5.008000;
 use strict;
 use warnings;
 
+use Math::GSLx::ODEIV2::ConfigData;
+
 use Carp;
 use Scalar::Util qw/looks_like_number/;
 
@@ -57,6 +59,21 @@ sub ode_solver {
       croak "Could not understand 't range'";
     }
   } 
+
+  # PDL
+  my $have_pdl = Math::GSLx::ODEIV2::ConfigData->config('have_pdl');
+  my $want_pdl = $opts->{PDL};
+  if ($have_pdl) {
+    if ($want_pdl) {
+      carp "PDL return is not yet implemented";
+    } else {
+      #carp "Perl AoA unroll from PDL backend is not yet implemented";
+    }
+  } else {
+    if ($want_pdl) {
+      carp "Your installed version of Math::GSLx::ODEIV2 was compiled without PDL capability. To use the PDL backend please be sure that PDL is installed, then rebuild Math::GSLx::ODEIV2.";
+    }
+  }
 
   # Step type
   my $step_type = 0;

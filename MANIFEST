@@ -1,8 +1,6 @@
 Changes
-Makefile.PL
+Build.PL
 MANIFEST
-ODEIV2.xs
-ppport.h
 README
 t/00-use.t
 t/odes_simple.t
@@ -11,3 +9,9 @@ t/sine.t
 t/sine_bad.t
 t/sine_jacobian.t
 lib/Math/GSLx/ODEIV2.pm
+lib/Math/GSLx/ODEIV2.xs
+src/common.c
+src/container.c
+inc/common.h
+inc/container.h
+inc/ppport.h
