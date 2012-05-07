@@ -58,4 +58,7 @@ my $jac_oregonator = sub {
 
 };
 
-my $res_oregonator = ode_solver([$eqn_oregonator, $jac_oregonator], [0, 360, 100], {});
+#my $res_oregonator = ode_solver([$eqn_oregonator, $jac_oregonator], [0, 360, 100], {});
+
+done_testing;
+

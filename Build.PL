@@ -44,7 +44,6 @@ my $build = Module::Build->new(
     build_requires    => {
       'ExtUtils::CBuilder' => 0,
     },
-    xs_files => {'ODEIV2.xs' => 'lib/Math/GSLx/ODEIV2.xs'},
     c_source => 'src',
     extra_compiler_flags => $extra_compiler_flags,
     extra_linker_flags => $gsl_libs,
